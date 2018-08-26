@@ -23,10 +23,10 @@ One need to create an annotation or use the existing one. If you have an annotat
 Annotation is best created with a real examplary output. So create some call and out it unquoted to the `create_annotation()` function.
 
 
-```
-> library(lavaan)
-> create_annotation(cfa('f1 =~ x1 + x2 + x3 + x4', HolzingerSwineford1939))
-```
+<pre><span style="color:blue">library(lavaan)
+library(annotated)
+create_annotation(cfa('f1 =~ x1 + x2 + x3 + x4', HolzingerSwineford1939))
+</pre>
 
 After this, you will be carried through a long interactive Q&A asking you about each line of the output and how it should be annotated. If you opt for conditional annotations, the conditions should be also added. Conditions are pieces of R code that should return *TRUE* or *FALSE*, they may contain an outputted object referred to as `ob`, for example, `nobs(ob)<100` is a proper condition to show an annotations if the model was fitted to sample less than 100.
 
@@ -287,9 +287,7 @@ After the tutorial finished, two files can be saved: **example.R** (see *Technic
 
 First, tell R where the libarary with annotations is located.
 
-<pre>
-<span style="color:blue">
-options(annotated.source="example.R")
+<pre><span style="color:blue">options(annotated.source="example.R")
 </span></pre>
 
 
