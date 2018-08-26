@@ -14,13 +14,14 @@ Install via `devtools::install_github("maksimrudnev/annotated")`.
 ### For students:
 
 1. Set the location of the annotation file, by specifying `annotated.source` option, for example, a folder "collection": `options(annotated.source="collection")`.
-2. Run `annotated(some unquoted call to a function)` and enjoy your
+2. Run `annotated(some unquoted call to a function)` and enjoy.
 
 
 
 ## Pros
 
 Speed and simplicity.
+Annotations are processed as warnings, so in R studio and in raw R they are printed in different color, which makes them easier to understand.
 
 ## Recommendation
 
