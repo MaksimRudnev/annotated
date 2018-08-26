@@ -16,7 +16,7 @@ Install via `devtools::install_github("maksimrudnev/annotated")`.
 1. Set the location of the annotation file, by specifying `annotated.source` option, for example, a folder "collection": `options(annotated.source="collection")`.
 2. Run `annotated(some unquoted call to a function)` and enjoy.
 
-See vignette: https://github.com/MaksimRudnev/annotated/blob/master/vignettes/my-vignette.Rmd
+See vignette: https://github.com/MaksimRudnev/annotated/blob/master/vignettes/my-vignette.htm
 
 ## Pros
 
