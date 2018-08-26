@@ -13,5 +13,10 @@ create_annotation(...)
 For teachers: create annotation
 }
 \details{
-run create_annotation() and follow the interactive instructions.
+run create_annotation() and follow the interactive instructions, or add an unquoted call.
+}
+\examples{
+library(lavaan)
+create_annotation(cfa('f1 =~ x1 + x2 + x3 + x4', HolzingerSwineford1939))
+
 }

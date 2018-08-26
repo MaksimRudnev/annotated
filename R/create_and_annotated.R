@@ -3,7 +3,11 @@
 #'
 #'@param ... An examplary call that produces a print output to be annotated.
 #'
-#'@details run create_annotation() and follow the interactive instructions.
+#'@details run create_annotation() and follow the interactive instructions, or add an unquoted call.
+#'
+#'@examples
+#' library(lavaan)
+#' create_annotation(cfa('f1 =~ x1 + x2 + x3 + x4', HolzingerSwineford1939))
 #'
 #' @export
 create_annotation <- function(...) {
@@ -201,6 +205,9 @@ If you do not want to comment the line, just press 'Enter'.")
 #'
 #' @param ... The call to function to get annotations.
 #'
+#'@examples
+#' options(annotated.source="example.R") # set the source file or directory
+#' m<-annotated(cfa('f1 =~ x1 + x2 + x3 + x4', HolzingerSwineford1939))
 #'
 #'@export
 annotated <- function(...) {

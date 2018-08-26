@@ -12,3 +12,8 @@ annotated(...)
 \description{
 For students: get annotations
 }
+\examples{
+options(annotated.source="example.R") # set the source file or directory
+m<-annotated(cfa('f1 =~ x1 + x2 + x3 + x4', HolzingerSwineford1939))
+
+}
