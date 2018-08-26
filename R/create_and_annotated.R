@@ -9,16 +9,22 @@
 create_annotation <- function(...) {
 
 
-  call. <- readline("Enter the call: ")
-  cat("\n")
+  if(is.na(as.character(sys.call())[2])) {
+    call. <- readline("Enter the call: ")
+    cat("\n")
+  } else {
+    call. <- as.character(sys.call())[2]
+  }
+
+
   output <- capture.output(eval(parse(text=call.)))
-  print(output, quote=F)
+  for(line in 1:length(output))  cat("[", line, "] ", output[line], "\n", sep="")
   #output <- output[output!=""]
 
   void<-readline("Above is the output you are going to annotate.")
 
   conditional <- menu(c("Yes", "No"), title="Would you like to make annotations conditional?
-                      You will be prompted to add conditions for every line of current output.")
+You will be prompted to add conditions for every line of current output.")
   if(conditional==1) {
     void<-readline("Every condition will be saved as an R script. You can refer to the output object of the initial call as 'ob'.")
     conditions <- list(cond1=rep("", length(output)),
@@ -29,14 +35,19 @@ create_annotation <- function(...) {
 
 
   void<-readline("Now I am going to return it line by line so you can add your annotations.
-                 If you do not want to comment the line, just press 'Enter'.")
+If you do not want to comment the line, just press 'Enter'.")
 
   annotation <- list(cond1=rep("", length(output)),
                      cond2=rep("", length(output)),
                      cond3=rep("", length(output))
   )
   for(line in 1:length(output)) {
+
     cat("[", line, "] ", output[line], "\n", sep="")
+
+    if(!output[line]=="")   {
+
+
 
     if(conditional==1) {
       cond <- menu(c("Yes", "No"), title="Is it conditional?")
@@ -65,7 +76,7 @@ create_annotation <- function(...) {
 
     }
 
-  }
+  }}
 
   void <- readline("It's over. Press Enter and have a look at the annotated. ")
 
@@ -94,15 +105,15 @@ create_annotation <- function(...) {
 
 
   choices <- c("Save as R-script for future use with 'annotate' function.",
-               "Save an object called 'annotation' to the environment."#,
-               #"Save as html as a static example.",
-               #"Return markdown code of the static example."
+               #"Save an object called 'annotation' to the environment."#,
+               "Save as html as the static example."#,
+               #"Save as markdown of the static example."
   )
 
   selected.choice <- select.list(choices, title="How do I save the annotations?",
-                                 preselect=choices[2], multiple=T)
+                                 preselect=choices[1], multiple=T)
 
-  if(any(selected.choice %in% choices[1:2])) {
+  if(any(selected.choice %in% choices[1])) {
 
     methods.for <- readline("To which functions this annotation is applicable? separate by spaces e.g., lavaan::cfa cfa:  ")
     if(methods.for=="") methods.for <- readline("You HAVE TO specify function names these annotations are applicable to (e.g., lavaan::cfa, cfa)? ")
@@ -130,11 +141,54 @@ create_annotation <- function(...) {
   }
 
   if (any(selected.choice %in% choices[2])) {
+    # Create md and html
+
+    html.output <-
+    paste0(sapply(1:length(output), function(i)  {
+      paste0(output[i], "<br>", "<span style='color:red;'>",
+
+      if(conditional==1) {
+
+        paste0(sapply(1:length(conditions), function(x) {
+
+          if(!(conditions[[x]][i]=="" && annotation[[x]][i]=="")) {
+            paste0( ifelse(conditions[[x]][i]=="", "", paste0("CONDITION", x, ": ", conditions[[x]][i], "<br>")),
+                   "ANNOTATION: ", annotation[[x]][i], "<br>")
+          } else {
+            ""
+          }
+        }), collapse="")
 
 
-    assign("anno", list(annotation, conditions, methods.for), .GlobalEnv)
+      } else {
+
+        annotation[[1]][i]
+
+      }, "</span>")
+    }), collapse="")
+    html.output <- paste0("<pre>", html.output, "</pre>")
+
+    }
+
+
+
+  if (any(selected.choice %in% choices[2])) {
+
+    filename <- readline("Give this file a name with .html extension: ")
+    cat(html.output, file=filename)
+
+    #assign("anno", list(annotation, conditions, methods.for), .GlobalEnv)
 
   }
+
+  # if (any(selected.choice %in% choices[3])) {
+  #
+  #   filename <- readline("Give this file a name with .md extension: ")
+  #   cat(md.output, file=filename)
+  #
+  #   #assign("anno", list(annotation, conditions, methods.for), .GlobalEnv)
+  #
+  # }
 
   cat("all done.")
 }

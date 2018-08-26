@@ -4,11 +4,11 @@ Quickly annotate console outputs of specific functions and make them conditional
 
 Install via `devtools::install_github("maksimrudnev/annotated")`.
 
-## instructions
+## How to use
 
 ### For instructors:
 
-1. Use interactive `create_annotation()` to quickly create annotations with an expemplary call to a function. It will save the result to an annotation file.
+1. Use interactive `create_annotation()` to quickly create annotations with an expemplary call to a function. It will save the result to an annotation file or provide html file woth all the annotations added to this example.
 2. You can edit the annotation file by hand, as is is a source R script.
 
 ### For students:
@@ -16,7 +16,7 @@ Install via `devtools::install_github("maksimrudnev/annotated")`.
 1. Set the location of the annotation file, by specifying `annotated.source` option, for example, a folder "collection": `options(annotated.source="collection")`.
 2. Run `annotated(some unquoted call to a function)` and enjoy.
 
-
+See vignette: https://github.com/MaksimRudnev/annotated/blob/master/vignettes/my-vignette.Rmd
 
 ## Pros
 
