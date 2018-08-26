@@ -1,0 +1,40 @@
+---
+title: "Adding annotations to console outputs"
+author: "Maksim Rudnev"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Adding annotations to console outputs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+  
+)
+```
+
+
+
+
+## Codes
+
+
+```{r, code}
+
+#dt<-haven::read_sav("/Users/maksimrudnev/Dropbox/STAT/European Social Survey/Data/ESS7/ESS7e02_1.sav")
+#dt<-as.matrix(dt[1:1000, c("ppltrst", "pplfair", "pplhlp", "trstprl")])
+
+#create_annotation(cfa("trust =~ ppltrst + pplfair + pplhlp", dt))
+
+
+#options(annotated.source="collection")
+#m<-annotated(lavaan::cfa("trust =~ ppltrst + pplfair +pplhlp+ trstprl" , dt))
+
+
+```
+
+
