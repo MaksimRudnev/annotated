@@ -1,5 +1,5 @@
 ---
-title: "Adding dynemic annotations to console outputs"
+title: "Adding dynamic annotations to console outputs"
 author: "Maksim Rudnev"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -8,14 +8,6 @@ vignette: >
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
-
-```{r setup, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
-  
-)
-```
 
 
 1. [Create annotations](#create-annotations)
