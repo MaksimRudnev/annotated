@@ -26,6 +26,7 @@ Speed and simplicity.
 
 Use with R Studio.
 
+It is a relative of [xplain](http://www.zuckarelli.de/xplain/index.html) package, but makes creation of annotations and use of them much **much** easier.
 
 ## Limits
 
