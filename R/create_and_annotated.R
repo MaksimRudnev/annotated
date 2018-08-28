@@ -5,9 +5,8 @@
 #'
 #'@details run create_annotation() and follow the interactive instructions, or add an unquoted call.
 #'
-#'@examples
-#' library(lavaan)
-#' create_annotation(cfa('f1 =~ x1 + x2 + x3 + x4', HolzingerSwineford1939))
+#' @examples  require(datasets)
+#'  create_annotation(lm('dist ~ speed', cars))
 #'
 #' @export
 create_annotation <- function(...) {
@@ -207,8 +206,9 @@ If you do not want to comment the line, just press 'Enter'.")
 #' @param ... The call to function to get annotations.
 #'
 #'@examples
-#' options(annotated.source="example.R") # set the source file or directory
-#' m<-annotated(cfa('f1 =~ x1 + x2 + x3 + x4', HolzingerSwineford1939))
+#' options(annotated.source="vignettes/lm.ru.R") # set the source file or directory
+#' require(datasets)
+#' m<-annotated(lm('dist ~ speed', cars))
 #'
 #'@export
 annotated <- function(...) {

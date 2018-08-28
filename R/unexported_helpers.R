@@ -19,7 +19,8 @@
 #' Helper to run inline r code (a lá .Rmd)
 #'
 #'
-#' @export
+#'@param rowtxt Annotation to parse.
+#'
 parse.annotation.row <- function(rowtxt) {
   b<- as.character(exists("ob", where=parent.frame(), inherits=T))
   ob <- get("ob", parent.frame()) #is.null(get0("ob", envir = pos.to.env(-1L)))

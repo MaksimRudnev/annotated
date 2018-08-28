@@ -2,4 +2,3 @@
 
 export(annotated)
 export(create_annotation)
-export(parse.annotation.row)

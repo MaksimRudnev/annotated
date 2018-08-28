@@ -6,6 +6,9 @@
 \usage{
 parse.annotation.row(rowtxt)
 }
+\arguments{
+\item{rowtxt}{Annotation to parse.}
+}
 \description{
 Helper to run inline r code (a lá .Rmd)
 }
