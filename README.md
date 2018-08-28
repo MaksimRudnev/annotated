@@ -8,7 +8,11 @@ Install via `devtools::install_github("maksimrudnev/annotated")`.
 
 ### For instructors:
 
-1. Use interactive `create_annotation()` to quickly create annotations with an expemplary call to a function. It will save the result to an annotation file or provide html file woth all the annotations added to this example.
+1. Use interactive `create_annotation()` to quickly create annotations with an exemplary call to a function. It will save the result to an annotation file or provide html file woth all the annotations added to this example.
+
+**Annotations** are short fragments of text to help students (or yourself) to understand the output. They may contain fragment of R code enclosed in backticks, Rmarkdown style. For example: ```" by the way, CFI is `fitMeasures(ob)["cfi"]` "```.
+**Conditions** are optional pieces of R code that should return *TRUE* or *FALSE*, for example, `nobs(ob)<100`.
+
 2. You can edit the annotation file by hand, as is is a source R script.
 
 ### For students:
@@ -21,16 +25,19 @@ See vignette: https://github.com/MaksimRudnev/annotated/blob/master/vignettes/vi
 ## Pros
 
 Speed and simplicity.
-Annotations are processed as warnings, so in R studio and in raw R they are printed in different color, which makes them easier to understand.
+Annotations are processed as warnings, so in R-Studio and in the raw R they are printed in different color, which makes them easier to understand.
 
 ## Recommendation
 
 Use with R Studio.
 
-It is a relative of [xplain](http://www.zuckarelli.de/xplain/index.html) package, but makes creation of annotations and use of them much **much** easier.
 
 ## Limits
 
 Currently limited to console, and 3 conditions.
 
-Unrelated to `ggplot2`'s `annotate` function.
+## Disclaimer 
+
+It is unrelated to `ggplot2`'s `annotate` function.
+
+It is a younger sister of [xplain](http://www.zuckarelli.de/xplain/index.html) package, but it makes creation anfd use of annotations much, **much** easier.

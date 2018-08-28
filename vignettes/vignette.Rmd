@@ -30,9 +30,9 @@ create_annotation(cfa('f1 =~ x1 + x2 + x3 + x4', HolzingerSwineford1939))
 
 After this, you will be carried through a long interactive Q&A asking you about each line of the output and how it should be annotated. If you opt for conditional annotations, the conditions should be also added.
 
-**Conditions** are pieces of R code that should return *TRUE* or *FALSE*, they may contain an outputted object referred to as `ob`, for example, `nobs(ob)<100` is a proper condition to show yout annotations if the model was fitted to sample less than 100.
+**Annotations** are short fragments of text to help students (or yourself) to understand the output. They may contain fragment of R code enclosed in backticks, like in Rmarkdown.\* For example, if you can some additional information to the output, say CFI index: ```" by the way, CFI is `fitMeasures(ob)["cfi"]` "```.
 
-**Annotations** are short fragments of text to help students (or yourself) to understand the output. They may contain fragment of R code enclosed in backticks, like in Rmarkdown.\*
+**Conditions** are optional pieces of R code that should return *TRUE* or *FALSE*, they may contain an outputted object referred to as `ob`, for example, `nobs(ob)<100` is a proper condition to show yout annotations if the model was fitted to sample less than 100. All conditions are enclose in `if()` and executed before printing the corresponding annotation. If one condition is specified than at least second should be specified as well, for example if there is a condition `nobs(ob)<100`, there should be also `nobs(ob)>100`.
 
 <small>\* Scoping might be still a problem, so try to use standard methods, or the ones included in a package which contains a function you want to annotate.</small>
 
@@ -278,8 +278,8 @@ Entries are saved to example.R. You can manually edit them later.
 all done.
 
 ```
-
 </details>
+
 
 
 After the tutorial finished, two files can be saved: **example.R** (see *Technical details* below) that can be used for dynamic annotation, and **example.html** that shows all annotations with conditions (as following):
