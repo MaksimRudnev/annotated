@@ -18,9 +18,9 @@ vignette: >
 ## 1. Create annotations
 
 
-One need to create an annotation or use the existing one. If you have an annotation files, check the next section - of how to use it.
+One need to create an annotation or use the existing one. If you have an annotation files, check the next section - on how to use it.
 
-Annotation is best created with a real examplary output. So create some call and out it unquoted to the `create_annotation()` function.
+Annotation is best created with a real examplary output. So create some call and put it unquoted to the `create_annotation()` function.
 
 
 <pre><span style="color:blue">library(lavaan)
@@ -28,7 +28,13 @@ library(annotated)
 create_annotation(cfa('f1 =~ x1 + x2 + x3 + x4', HolzingerSwineford1939))
 </pre>
 
-After this, you will be carried through a long interactive Q&A asking you about each line of the output and how it should be annotated. If you opt for conditional annotations, the conditions should be also added. Conditions are pieces of R code that should return *TRUE* or *FALSE*, they may contain an outputted object referred to as `ob`, for example, `nobs(ob)<100` is a proper condition to show an annotations if the model was fitted to sample less than 100.
+After this, you will be carried through a long interactive Q&A asking you about each line of the output and how it should be annotated. If you opt for conditional annotations, the conditions should be also added.
+
+**Conditions** are pieces of R code that should return *TRUE* or *FALSE*, they may contain an outputted object referred to as `ob`, for example, `nobs(ob)<100` is a proper condition to show yout annotations if the model was fitted to sample less than 100.
+
+**Annotations** are short fragments of text to help students (or yourself) to understand the output. They may contain fragment of R code enclosed in backticks, like in Rmarkdown.\*
+
+<small>\* Scoping might be still a problem, so try to use standard methods, or the ones included in a package which contains a function you want to annotate.</small>
 
 <details>
   <summary>
@@ -180,7 +186,7 @@ Selection: 2
 
 ---------------------------------------------------------------------------
 
-Annotate: this is actually Chi-square.
+Annotate: this is actually Chi-square. its value is `round(fitMeasures(ob)["chisq"],1)` with `fitMeasures(ob)["df"]` degrees of freedom.
 
 ---------------------------------------------------------------------------
 
@@ -242,7 +248,7 @@ ANNOTATION: You have relatively small sample. Tread chi-square seriously.
 
   Model Fit Test Statistic                      11.798 
 CONDITION: 
-ANNOTATION: this is actually Chi-square.
+ANNOTATION: this is actually Chi-square. its value is `round(fitMeasures(ob)["chisq"],1)` with `fitMeasures(ob)["df"]` degrees of freedom.
 
   Degrees of freedom                                 2 
 
@@ -276,10 +282,10 @@ all done.
 </details>
 
 
-After the tutorial finished, two files can be saved: **example.R** (see *Technical details* below) that can be used for dynamic annotation, and **example.html** that shows annotation to this specific example with conditions (as following):
+After the tutorial finished, two files can be saved: **example.R** (see *Technical details* below) that can be used for dynamic annotation, and **example.html** that shows all annotations with conditions (as following):
 
 
-<pre>lavaan 0.6-2 ended normally after 22 iterations<br><span style='color:red;'>CONDITION1: lavInspect(ob, "optim")$converged<br>ANNOTATION: The solution was found. Also note the version of the software.<br>CONDITION2: !lavInspect(ob, "optim")$converged<br>ANNOTATION: Beware! The solution was NOT found for this model.<br></span><br><span style='color:red;'></span>  Optimization method                           NLMINB<br><span style='color:red;'></span>  Number of free parameters                          8<br><span style='color:red;'></span><br><span style='color:red;'></span>  Number of observations                           301<br><span style='color:red;'>CONDITION1: nobs(ob)>500<br>ANNOTATION: You have relatively large sample.<br>CONDITION2: nobs(ob)<500<br>ANNOTATION: You have relatively small sample. Treat chi-square seriously.<br></span><br><span style='color:red;'></span>  Estimator                                         ML<br><span style='color:red;'></span>  Model Fit Test Statistic                      11.798<br><span style='color:red;'>ANNOTATION: this is actually Chi-square.<br></span>  Degrees of freedom                                 2<br><span style='color:red;'></span>  P-value (Chi-square)                           0.003<br><span style='color:red;'></span></pre>
+<pre>lavaan 0.6-2 ended normally after 22 iterations<br><span style='color:red;'>CONDITION1: lavInspect(ob, "optim")$converged<br>ANNOTATION: The solution was found. Also note the version of the software.<br>CONDITION2: !lavInspect(ob, "optim")$converged<br>ANNOTATION: Beware! The solution was NOT found for this model.<br></span><br><span style='color:red;'></span>  Optimization method                           NLMINB<br><span style='color:red;'></span>  Number of free parameters                          8<br><span style='color:red;'></span><br><span style='color:red;'></span>  Number of observations                           301<br><span style='color:red;'>CONDITION1: nobs(ob)>500<br>ANNOTATION: You have relatively large sample.<br>CONDITION2: nobs(ob)<500<br>ANNOTATION: You have relatively small sample. Treat chi-square seriously.<br></span><br><span style='color:red;'></span>  Estimator                                         ML<br><span style='color:red;'></span>  Model Fit Test Statistic                      11.798<br><span style='color:red;'>ANNOTATION: this is actually Chi-square. its value is `round(fitMeasures(ob)["chisq"],1)` with `fitMeasures(ob)["df"]` degrees of freedom. <br></span>  Degrees of freedom                                 2<br><span style='color:red;'></span>  P-value (Chi-square)                           0.003<br><span style='color:red;'></span></pre>
 
 
 
@@ -308,7 +314,7 @@ lavaan 0.6-2 ended normally after 22 iterations
 
   Estimator                                         ML
   Model Fit Test Statistic                      11.798
- <span style="color:red">this is actually Chi-square.</span>
+ <span style="color:red">this is actually Chi-square.its value is 11.8 with 2 degrees of freedom.</span>
   Degrees of freedom                                 2
   P-value (Chi-square)                           0.003
 </pre>
@@ -327,7 +333,7 @@ lavaan 0.6-2 ended normally after 25 iterations
 
   Estimator                                         ML
   Model Fit Test Statistic                       0.000
-<span style="color:red">this is actually Chi-square. </span>
+<span style="color:red">this is actually Chi-square.its value is 0 with 0 degrees of freedom. </span>
   Degrees of freedom                                 0
  </pre>
   
@@ -342,7 +348,7 @@ list(
   annotation=list(
     cond1=c('The solution was found. Also note the version of the software.','','','','',
             'You have relatively large sample.', '','',
-            'this is actually Chi-square.', '',''),
+            'this is actually Chi-square.its value is `round(fitMeasures(ob)["chisq"],1)` with `fitMeasures(ob)["df"]` degrees of freedom.', '',''),
     cond2=c('Beware! The solution was NOT found for this model.','','','','',
             'You have relatively small sample. Treat chi-square seriously.','','','','',''),
     cond3=c('','','','','','','','','','','')),

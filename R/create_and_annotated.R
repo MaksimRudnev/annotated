@@ -31,16 +31,17 @@ create_annotation <- function(...) {
 You will be prompted to add conditions for every line of current output.")
   if(conditional==1) {
     void<-readline("Every condition will be saved as an R script. You can refer to the output object of the initial call as 'ob'.")
-    conditions <- list(cond1=rep("", length(output)),
-                       cond2=rep("", length(output)),
-                       cond3=rep("", length(output))
-    )
+
   }
 
 
   void<-readline("Now I am going to return it line by line so you can add your annotations.
 If you do not want to comment the line, just press 'Enter'.")
 
+  conditions <- list(cond1=rep("", length(output)),
+                     cond2=rep("", length(output)),
+                     cond3=rep("", length(output))
+  )
   annotation <- list(cond1=rep("", length(output)),
                      cond2=rep("", length(output)),
                      cond3=rep("", length(output))
@@ -138,7 +139,7 @@ If you do not want to comment the line, just press 'Enter'.")
                 "cond2=", paste0("c(", paste0("'", conditions[[2]], "'", collapse=","),  "),"),
                 "cond3=", paste0("c(", paste0("'", conditions[[3]], "'", collapse=","),  ")),"),
 
-                "methods.for=",           paste0(strsplit(methods.for, " "), collapse=","),
+                "methods.for=",           paste0("'", strsplit(methods.for, " "), "'", collapse=","),
                 ")", collapse="\n"),
          file=filename)
     void<-readline(paste0("Entries are saved to ", filename, ". You can manually edit them later."))
@@ -260,20 +261,23 @@ annotated <- function(...) {
   # Handle errors and warnings of the call, and evaluate
 
   options(warn=1)
+
   wrn<- capture.output({err<-try({ob <-eval(parse(text=call))}, silent=T)}, type="message")
 
   if(length(wrn)>0) stop(wrn, call.=F)
+
   if(class(err)=="try-error") {
     stop(attr(err, "condition")[["message"]], call.=F)
 
   } else {
     rm(err, wrn)
+
   }
 
 
   output = capture.output(print(ob))
 
-  #print(annotation)
+
   # Print the annotated output line by line
 
   for(i in 1:length(output)) {
@@ -283,7 +287,12 @@ annotated <- function(...) {
     if(annotation[["conditions"]][["cond1"]][i]=="") {
 
       if(annotation[["annotation"]][["cond1"]][i]!="") {
-        message(paste0("\n",annotation[["annotation"]][["cond1"]][i]))
+        message(paste0("\n",
+                       parse.annotation.row(
+                         annotation[["annotation"]][["cond1"]][i])
+                       )
+                )
+
       } else {
         cat("\n")
       }
@@ -292,14 +301,18 @@ annotated <- function(...) {
     } else {
 
       eval(parse(text=paste("if(", annotation[["conditions"]][["cond1"]][i], ") message('\n",
-                            annotation[["annotation"]][["cond1"]][i], "')")))
+                            parse.annotation.row(
+                            annotation[["annotation"]][["cond1"]][i]), "')" )))
       eval(parse(text=paste("if(", annotation[["conditions"]][["cond2"]][i], ") message('\n",
-                            annotation[["annotation"]][["cond2"]][i], "')")))
+                            parse.annotation.row(
+                              annotation[["annotation"]][["cond2"]][i]), "')")))
 
       if(annotation[["conditions"]][["cond3"]][i]!="") {
 
         eval(parse(text=paste("if(", annotation[["conditions"]][["cond3"]][i], ") message(\n'",
-                              annotation[["annotation"]][["cond3"]][i], "')")))
+                              parse.annotation.row(
+                                annotation[["annotation"]][["cond3"]][i]), "')"))
+             )
 
       }
     }
@@ -307,3 +320,5 @@ annotated <- function(...) {
   }
   invisible(ob)
 }
+# eval(parse(text=paste("if(", "nobs(m)>1", ") message(\n'",
+# parse.annotation.row("npnpn `r length(coef(m))` fjsdklkj"), "')")))
