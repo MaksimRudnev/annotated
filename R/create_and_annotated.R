@@ -1,17 +1,18 @@
 #Sys.setenv(TZ='GMT')
-#' For teachers: create annotation
+#' For instructors: create annotation
 #'
 #'@param ... An examplary call that produces a print output to be annotated.
 #'
 #'@details run create_annotation() and follow the interactive instructions, or add an unquoted call.
 #'
 #' @examples  require(datasets)
-#'  create_annotation(lm('dist ~ speed', cars))
+#'  if(interactive())
+#'    create_annotation(lm('dist ~ speed', cars))
 #'
 #' @export
 create_annotation <- function(...) {
 
-
+  if(! interactive()) stop("This function is meant to be used in an interactive mode.")
   if(is.na(as.character(sys.call())[2])) {
     call. <- readline("Enter the call: ")
     cat("\n")
@@ -58,17 +59,17 @@ If you do not want to comment the line, just press 'Enter'.")
       if(cond==1) {
 
         conditions[["cond1"]][line]      <-readline("What is condition 1? ")
-        annotation[["cond1"]][line]      <-readline("Annotate (condition 1): ")
+        annotation[["cond1"]][line]      <-readline("Annotate (if condition 1 is TRUE): ")
 
 
         conditions[["cond2"]][line]      <-readline("What is condition 2? ")
-        annotation[["cond2"]][line]      <-readline("Annotate (condition 2): ")
+        annotation[["cond2"]][line]      <-readline("Annotate (if condition 2 is TRUE): ")
 
 
         cond3 <- menu(c("Yes", "No"), title="Need to add another (last) condition?")
         if(cond3==1) {
-          conditions[["cond3"]][line]      <-readline("What is the condition? ")
-          annotation[["cond3"]][line]      <-readline("Annotate (condition 3): ")
+          conditions[["cond3"]][line]      <-readline("What is condition 3? ")
+          annotation[["cond3"]][line]      <-readline("Annotate (if condition 3 is TRUE): ")
         }
 
       } else {
@@ -82,14 +83,14 @@ If you do not want to comment the line, just press 'Enter'.")
 
   }}
 
-  void <- readline("It's over. Press Enter and have a look at the annotated. ")
+  void <- readline("It's over. Press Enter to have a look at the annotated output. ")
 
   for(i in 1:length(output))  {
     cat(output[i], "\n")
 
     if(conditional==1) {
 
-      message(sapply(1:length(conditions), function(x) {
+      cat(crayon::red(sapply(1:length(conditions), function(x) {
 
         if(!(conditions[[x]][i]=="" && annotation[[x]][i]=="")) {
           paste0("CONDITION: ",  conditions[[x]][i], "\n",
@@ -97,7 +98,7 @@ If you do not want to comment the line, just press 'Enter'.")
         } else {
           ""
         }
-      }))
+      })))
 
     } else {
 
@@ -119,8 +120,8 @@ If you do not want to comment the line, just press 'Enter'.")
 
   if(any(selected.choice %in% choices[1])) {
 
-    methods.for <- readline("To which functions this annotation is applicable? separate by spaces e.g., lavaan::cfa cfa:  ")
-    if(methods.for=="") methods.for <- readline("You HAVE TO specify function names these annotations are applicable to (e.g., lavaan::cfa, cfa)? ")
+    methods.for <- readline("To which functions this annotation is applicable? separate by spaces e.g., lm cfa:  ")
+    if(methods.for=="") methods.for <- readline("You HAVE TO specify function names these annotations are applicable to (e.g., lm cfa)? ")
 
   }
 
@@ -128,18 +129,25 @@ If you do not want to comment the line, just press 'Enter'.")
 
 
     filename <- readline("Give this file a name with .R extension: ")
-    cat( paste0("list(",
-                "annotation=list(cond1=", paste0("c(", paste0("'", annotation[[1]], "'", collapse=","),  "),"),
-                "cond2=", paste0("c(", paste0("'", annotation[[2]], "'", collapse=","),  "),"),
-                "cond3=", paste0("c(", paste0("'", annotation[[3]], "'", collapse=","),  ")),"),
+    cat( paste0("#This is a script generated with an R package 'annotated'. It is supposed to be used as a library of annotations within the function 'annotated()'. Created on: ", Sys.time(), "\n\n",
+      "list(\n",
+                " annotation = list(\n  cond1 = ",
+                paste0("c(\n    ", paste0("'", annotation[[1]], "'", collapse=",\n    "),"),\n"),
+                "  cond2 = ",
+                paste0("c(\n    ", paste0("'", annotation[[2]], "'", collapse=",\n    "),  "),\n"),
+                "  cond3 = ",
+                paste0("c(\n    ", paste0("'", annotation[[3]], "'", collapse=",\n    "),  ")\n ),\n"),
 
 
-                "conditions=list(cond1=", paste0("c(", paste0("'", conditions[[1]], "'", collapse=","),  "),"),
-                "cond2=", paste0("c(", paste0("'", conditions[[2]], "'", collapse=","),  "),"),
-                "cond3=", paste0("c(", paste0("'", conditions[[3]], "'", collapse=","),  ")),"),
+                " conditions = list(\n  cond1 = ",
+                paste0("c(\n    ", paste0("'", conditions[[1]], "'", collapse=",\n    "),  "),\n"),
+                "  cond2 = ",
+                paste0("c(\n    ", paste0("'", conditions[[2]], "'", collapse=",\n    "),  "),\n"),
+                "  cond3 = ",
+                paste0("c(\n    ", paste0("'", conditions[[3]], "'", collapse=",\n    "),  ")\n ),\n"),
 
-                "methods.for=",           paste0("'", strsplit(methods.for, " "), "'", collapse=","),
-                ")", collapse="\n"),
+                "methods.for = ",           paste0("'", strsplit(methods.for, " "), "'", collapse=","),
+                "\n)", collapse="\n"),
          file=filename)
     void<-readline(paste0("Entries are saved to ", filename, ". You can manually edit them later."))
   }
@@ -156,8 +164,9 @@ If you do not want to comment the line, just press 'Enter'.")
         paste0(sapply(1:length(conditions), function(x) {
 
           if(!(conditions[[x]][i]=="" && annotation[[x]][i]=="")) {
-            paste0( ifelse(conditions[[x]][i]=="", "", paste0("CONDITION", x, ": ", conditions[[x]][i], "<br>")),
-                   "ANNOTATION: ", annotation[[x]][i], "<br>")
+            paste0( ifelse(conditions[[x]][i]=="", "",
+                           paste0(crayon::underline(paste0("CONDITION", x, ":")), " ", conditions[[x]][i], "<br>")),
+                    crayon::underline("ANNOTATION:"), " ", annotation[[x]][i], "<br>")
           } else {
             ""
           }
@@ -201,22 +210,30 @@ If you do not want to comment the line, just press 'Enter'.")
 
 
 # Annotated funct #####
-#' For students: get annotations
+#' For learners: get annotations
 #'
-#' @param ... The call to function to get annotations.
+#' @param ... A call to a function to get annotations.
 #'
 #'@examples
-#' options(annotated.source="vignettes/lm.ru.R") # set the source file or directory
-#' require(datasets)
-#' m<-annotated(lm('dist ~ speed', cars))
+#'if(interactive()) {
+#'  options(annotated.source = "vignettes/lm.ru.R") # set the source file or directory
+#'  require(datasets)
+#'  lin.mod1 <- annotated(lm('dist ~ speed', cars))
+#' }
+#'
+#' @return
+#' The function invisibly returns an evaluated call to a function. For example, if `annotated(lm(a ~ b))` was called, it will return fitted `lm` object, as if annotated weren't there. Annotations are printed in the console at all times, even when the value is being assigned to an object.
 #'
 #'@export
 annotated <- function(...) {
 
   # Read annotation files
+if(is.null(getOption("annotated.source"))) {
+  stop(paste("The annotation library is not set. Set it using options(annotated.source='[file or directory]')."), call.=F)
 
+} else {
   source.file.dir <- getOption("annotated.source")
-
+}
 
   if(dir.exists(source.file.dir) ) {
 
@@ -246,7 +263,7 @@ annotated <- function(...) {
 
 
 
-    warning(paste0("There is more than one annotation available for the function ", function.used,
+    message(paste0("There is more than one annotation available for the function ", function.used,
                    ". In files", paste(list.files(source.file.dir)[applicable.annotations.index], collapse=","),
                    "Using the first one."))
 
@@ -287,11 +304,11 @@ annotated <- function(...) {
     if(annotation[["conditions"]][["cond1"]][i]=="") {
 
       if(annotation[["annotation"]][["cond1"]][i]!="") {
-        message(paste0("\n",
+        cat(crayon::red(paste0("\n",
                        parse.annotation.row(
-                         annotation[["annotation"]][["cond1"]][i])
-                       )
-                )
+                         annotation[["annotation"]][["cond1"]][i]),
+                       "\n")
+                ))
 
       } else {
         cat("\n")
@@ -300,18 +317,18 @@ annotated <- function(...) {
       # If conditions aren't empty
     } else {
 
-      eval(parse(text=paste("if(", annotation[["conditions"]][["cond1"]][i], ") message('\n",
+      eval(parse(text=paste("if(", annotation[["conditions"]][["cond1"]][i], ") cat(crayon::red('\n",
                             parse.annotation.row(
-                            annotation[["annotation"]][["cond1"]][i]), "')" )))
-      eval(parse(text=paste("if(", annotation[["conditions"]][["cond2"]][i], ") message('\n",
+                            annotation[["annotation"]][["cond1"]][i]), "'))" )))
+      eval(parse(text=paste("if(", annotation[["conditions"]][["cond2"]][i], ") cat(crayon::red('\n",
                             parse.annotation.row(
-                              annotation[["annotation"]][["cond2"]][i]), "')")))
+                              annotation[["annotation"]][["cond2"]][i]), "'))")))
 
       if(annotation[["conditions"]][["cond3"]][i]!="") {
 
-        eval(parse(text=paste("if(", annotation[["conditions"]][["cond3"]][i], ") message(\n'",
+        eval(parse(text=paste("if(", annotation[["conditions"]][["cond3"]][i], ") cat(crayon::red(\n'",
                               parse.annotation.row(
-                                annotation[["annotation"]][["cond3"]][i]), "')"))
+                                annotation[["annotation"]][["cond3"]][i]), "'))"))
              )
 
       }

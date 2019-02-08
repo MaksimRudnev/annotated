@@ -1,6 +1,6 @@
 ## R package `annotated` 
 
-Quickly annotate console outputs of specific functions and make them conditional of the values of the object. For example, if you can notice that p-values are not very meaningful in linear regression if the sample size used in the specific model was above 1 million. Unconditional annotations can also be useful.
+Quickly annotate console outputs of specific functions and let your students learn from it. Annotations may dynamically change depending on the input and fitted objects. For example, if R-squared of the linear model is below .1 you can add a warning message explaining that it may indicate a bad model. Creating conditional annotations is easy and resembles Rmarkdown logic. Use of annotation libraries is extremely straightforward.
 
 Install via `devtools::install_github("maksimrudnev/annotated")`.
 
@@ -8,16 +8,16 @@ Install via `devtools::install_github("maksimrudnev/annotated")`.
 
 ### For instructors:
 
-1. Use interactive `create_annotation()` to quickly create annotations with an exemplary call to a function. It will save the result to an annotation file or provide html file woth all the annotations added to this example.
+1. Use interactive `create_annotation()` to quickly create annotations with an exemplary call to a function. It will save the result to an annotation file.
 
-**Annotations** are short fragments of text to help students (or yourself) to understand the output. They may contain fragment of R code enclosed in backticks, Rmarkdown style. For example: ```" by the way, CFI is `fitMeasures(ob)["cfi"]` "```.
-**Conditions** are optional pieces of R code that should return *TRUE* or *FALSE*, for example, `nobs(ob)<100`.
+**Annotations** are short fragments of text to help students (or yourself) to understand the output. They may contain fragments of R code enclosed in backticks, Rmarkdown style, and may use reference to `ob` - the object returned by the target function. For example: ```" by the way, CFI is `fitMeasures(ob)["cfi"]` "```. Consider using package `crayon` to format annotations, for example: ```"No, you `crayon::bold("can not")` interpret these coefficients."```.
+**Conditions** are optional pieces of R code that should return *TRUE* or *FALSE*, for example, `nobs(ob)<100` for condition 1, and `nobs(ob)>=100` for condition 2.
 
-2. You can edit the annotation file by hand, as is is a source R script.
+2. You can edit the annotation file by hand, as it is a source R script.
 
 ### For students:
 
-1. Set the location of the annotation file, by specifying `annotated.source` option, for example, a folder "collection": `options(annotated.source="collection")`.
+1. Set the location of the annotation library by specifying `annotated.source` option, for example, a folder "collection": `options(annotated.source="collection")`.
 2. Run `annotated(some unquoted call to a function)` and enjoy.
 
 See vignette: https://github.com/MaksimRudnev/annotated/blob/master/vignettes/vignette.Rmd
@@ -25,19 +25,15 @@ See vignette: https://github.com/MaksimRudnev/annotated/blob/master/vignettes/vi
 ## Pros
 
 Speed and simplicity.
-Annotations are processed as warnings, so in R-Studio and in the raw R they are printed in different color, which makes them easier to understand.
-
-## Recommendation
-
-Use with R Studio.
+Annotations are printed in different (red) color, which makes them easier to understand.
 
 
-## Limits
+## Limitations
 
-Currently limited to console, and 3 conditions.
+Currently limited to the Console use, and 3 conditions. Not appropriate for non-interactive use.
 
 ## Disclaimer 
 
 It is unrelated to `ggplot2`'s `annotate` function.
 
-It is a younger sister of [xplain](http://www.zuckarelli.de/xplain/index.html) package, but it makes creation anfd use of annotations much, **much** easier.
+It is a younger sister of [xplain](http://www.zuckarelli.de/xplain/index.html) package, but it makes creation and use of annotations much faster, and **much** easier.

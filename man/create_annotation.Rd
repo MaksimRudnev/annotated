@@ -2,7 +2,7 @@
 % Please edit documentation in R/create_and_annotated.R
 \name{create_annotation}
 \alias{create_annotation}
-\title{For teachers: create annotation}
+\title{For instructors: create annotation}
 \usage{
 create_annotation(...)
 }
@@ -10,13 +10,14 @@ create_annotation(...)
 \item{...}{An examplary call that produces a print output to be annotated.}
 }
 \description{
-For teachers: create annotation
+For instructors: create annotation
 }
 \details{
 run create_annotation() and follow the interactive instructions, or add an unquoted call.
 }
 \examples{
  require(datasets)
- create_annotation(lm('dist ~ speed', cars))
+ if(interactive())
+   create_annotation(lm('dist ~ speed', cars))
 
 }

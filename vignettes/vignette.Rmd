@@ -1,5 +1,5 @@
 ---
-title: "Adding dynamic annotations to console outputs"
+title: "Adding dynamic annotations to console outputs with the R package `annotated`"
 author: "Maksim Rudnev"
 date: "`r Sys.Date()`"
 output: rmarkdown::html_vignette
@@ -38,7 +38,7 @@ After this, you will be carried through a long interactive Q&A asking you about 
 
 <details>
   <summary>
-    Click to see the full example of interactive Q&A.
+    Click to see the full log of the interactive Q&A.
   </summary>
 
 ```

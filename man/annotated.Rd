@@ -2,19 +2,24 @@
 % Please edit documentation in R/create_and_annotated.R
 \name{annotated}
 \alias{annotated}
-\title{For students: get annotations}
+\title{For learners: get annotations}
 \usage{
 annotated(...)
 }
 \arguments{
-\item{...}{The call to function to get annotations.}
+\item{...}{A call to a function to get annotations.}
+}
+\value{
+The function invisibly returns an evaluated call to a function. For example, if `annotated(lm(a ~ b))` was called, it will return fitted `lm` object, as if annotated weren't there. Annotations are printed in the console at all times, even when the value is being assigned to an object.
 }
 \description{
-For students: get annotations
+For learners: get annotations
 }
 \examples{
-options(annotated.source="vignettes/lm.ru.R") # set the source file or directory
-require(datasets)
-m<-annotated(lm('dist ~ speed', cars))
+if(interactive()) {
+ options(annotated.source = "vignettes/lm.ru.R") # set the source file or directory
+ require(datasets)
+ lin.mod1 <- annotated(lm('dist ~ speed', cars))
+}
 
 }

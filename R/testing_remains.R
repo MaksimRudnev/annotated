@@ -1,5 +1,12 @@
 #'
 
+# create_annotation(lm('dist ~ speed', cars))
+#
+# options(annotated.source = "lm.exp.R") # set the source file or directory
+# require(datasets)
+# lin.mod1 <- annotated(lm('dist ~ speed', cars))
+
+
 
 # return.call<- function(...,language="EN") as.character(sys.call())[2]
 #

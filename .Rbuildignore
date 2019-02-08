@@ -1,2 +1,6 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
+^.*\.Rhistory$
+lm.exp.R
+README.md
+/R/testing_remains.R
