@@ -10,7 +10,10 @@ Install via `devtools::install_github("maksimrudnev/annotated")`.
 
 1. Use interactive `create_annotation()` to quickly create annotations with an exemplary call to a function. It will save the result to an annotation file.
 
-**Annotations** are short fragments of text to help students (or yourself) to understand the output. They may contain fragments of R code enclosed in backticks, Rmarkdown style, and may use reference to `ob` - the object returned by the target function. For example: ```" by the way, CFI is `fitMeasures(ob)["cfi"]` "```. Consider using package `crayon` to format annotations, for example: ```"No, you `crayon::bold("can not")` interpret these coefficients."```.
+**Annotations** are short fragments of text to help students (or yourself) to understand the output. They may contain fragments of R code enclosed in backticks, Rmarkdown style, and may use reference to `ob` - the object returned by the target function. For example: ```" by the way, CFI is `fitMeasures(ob)["cfi"]` "```. 
+
+Consider using package `crayon` to format annotations, for example: ```"No, you `crayon::bold("can not")` interpret these coefficients."```.
+
 **Conditions** are optional pieces of R code that should return *TRUE* or *FALSE*, for example, `nobs(ob)<100` for condition 1, and `nobs(ob)>=100` for condition 2.
 
 2. You can edit the annotation file by hand, as it is a source R script.
@@ -25,7 +28,7 @@ See vignette: https://github.com/MaksimRudnev/annotated/blob/master/vignettes/vi
 ## Pros
 
 Speed and simplicity.
-Annotations are printed in different (red) color, which makes them easier to understand.
+Annotations are printed in a different (red) color, which makes them easier to understand.
 
 
 ## Limitations

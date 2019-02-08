@@ -84,7 +84,7 @@ If you do not want to comment the line, just press 'Enter'.")
   }}
 
   void <- readline("It's over. Press Enter to have a look at the annotated output. ")
-
+cat(cli::rule())
   for(i in 1:length(output))  {
     cat(output[i], "\n")
 
@@ -93,8 +93,8 @@ If you do not want to comment the line, just press 'Enter'.")
       cat(crayon::red(sapply(1:length(conditions), function(x) {
 
         if(!(conditions[[x]][i]=="" && annotation[[x]][i]=="")) {
-          paste0("CONDITION: ",  conditions[[x]][i], "\n",
-                 "ANNOTATION: ", annotation[[x]][i], "\n")
+          paste0(crayon::underline("CONDITION:"), " ",  conditions[[x]][i], "\n",
+                 crayon::underline("ANNOTATION:"), " ", annotation[[x]][i], "\n\n")
         } else {
           ""
         }
@@ -102,7 +102,7 @@ If you do not want to comment the line, just press 'Enter'.")
 
     } else {
 
-      message(annotation[[1]][i])
+      cat(crayon::red(annotation[[1]][i]))
 
     }
   }
@@ -115,7 +115,10 @@ If you do not want to comment the line, just press 'Enter'.")
                #"Save as markdown of the static example."
   )
 
-  selected.choice <- select.list(choices, title="How do I save the annotations?",
+  selected.choice <- select.list(choices,
+                                 title=paste0(
+                                   cli::rule(),
+                                   "\nHow do I save the annotations?"),
                                  preselect=choices[1], multiple=T)
 
   if(any(selected.choice %in% choices[1])) {
@@ -165,8 +168,8 @@ If you do not want to comment the line, just press 'Enter'.")
 
           if(!(conditions[[x]][i]=="" && annotation[[x]][i]=="")) {
             paste0( ifelse(conditions[[x]][i]=="", "",
-                           paste0(crayon::underline(paste0("CONDITION", x, ":")), " ", conditions[[x]][i], "<br>")),
-                    crayon::underline("ANNOTATION:"), " ", annotation[[x]][i], "<br>")
+                           paste0("CONDITION", x, ":", " ", conditions[[x]][i], "<br>")),
+                    "ANNOTATION:", " ", annotation[[x]][i], "<br>")
           } else {
             ""
           }
