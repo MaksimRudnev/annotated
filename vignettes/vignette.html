@@ -12,11 +12,72 @@
 
 <meta name="author" content="Maksim Rudnev" />
 
+<meta name="date" content="2019-02-10" />
 
 <title>Adding dynamic annotations to console outputs with the R package annotated</title>
 
 
 
+<style type="text/css">code{white-space: pre;}</style>
+<style type="text/css" data-origin="pandoc">
+div.sourceCode { overflow-x: auto; }
+table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
+  margin: 0; padding: 0; vertical-align: baseline; border: none; }
+table.sourceCode { width: 100%; line-height: 100%; }
+td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
+td.sourceCode { padding-left: 5px; }
+code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code > span.dt { color: #902000; } /* DataType */
+code > span.dv { color: #40a070; } /* DecVal */
+code > span.bn { color: #40a070; } /* BaseN */
+code > span.fl { color: #40a070; } /* Float */
+code > span.ch { color: #4070a0; } /* Char */
+code > span.st { color: #4070a0; } /* String */
+code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code > span.ot { color: #007020; } /* Other */
+code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code > span.fu { color: #06287e; } /* Function */
+code > span.er { color: #ff0000; font-weight: bold; } /* Error */
+code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+code > span.cn { color: #880000; } /* Constant */
+code > span.sc { color: #4070a0; } /* SpecialChar */
+code > span.vs { color: #4070a0; } /* VerbatimString */
+code > span.ss { color: #bb6688; } /* SpecialString */
+code > span.im { } /* Import */
+code > span.va { color: #19177c; } /* Variable */
+code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code > span.op { color: #666666; } /* Operator */
+code > span.bu { } /* BuiltIn */
+code > span.ex { } /* Extension */
+code > span.pp { color: #bc7a00; } /* Preprocessor */
+code > span.at { color: #7d9029; } /* Attribute */
+code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
 
 
 
@@ -31,7 +92,7 @@
 
 <h1 class="title toc-ignore">Adding dynamic annotations to console outputs with the R package <code>annotated</code></h1>
 <h4 class="author"><em>Maksim Rudnev</em></h4>
-<h4 class="date"><em><code>r Sys.Date()</code></em></h4>
+<h4 class="date"><em>2019-02-10</em></h4>
 
 
 
@@ -44,31 +105,27 @@
 <h2>1. Create annotations</h2>
 <p>One need to create an annotation or use the existing one. If you have an annotation files, check the next section - on how to use it.</p>
 <p>Annotation is best created with a real examplary output. So create some call and put it unquoted to the <code>create_annotation()</code> function.</p>
-<pre><span style="color:blue">library(lavaan)
+<pre><span style="color:blue">
 library(annotated)
-create_annotation(cfa('f1 =~ x1 + x2 + x3 + x4', HolzingerSwineford1939))
+create_annotation(lm(dist ~ speed, cars))
 </pre>
-<p>After this, you will be carried through a long interactive Q&amp;A asking you about each line of the output and how it should be annotated. If you opt for conditional annotations, the conditions should be also added.</p>
-<p><strong>Annotations</strong> are short fragments of text to help students (or yourself) to understand the output. They may contain fragment of R code enclosed in backticks, like in Rmarkdown.* For example, if you can some additional information to the output, say CFI index: <code>&quot; by the way, CFI is `fitMeasures(ob)[&quot;cfi&quot;]` &quot;</code>.</p>
-<p><strong>Conditions</strong> are optional pieces of R code that should return <em>TRUE</em> or <em>FALSE</em>, they may contain an outputted object referred to as <code>ob</code>, for example, <code>nobs(ob)&lt;100</code> is a proper condition to show yout annotations if the model was fitted to sample less than 100. All conditions are enclose in <code>if()</code> and executed before printing the corresponding annotation. If one condition is specified than at least second should be specified as well, for example if there is a condition <code>nobs(ob)&lt;100</code>, there should be also <code>nobs(ob)&gt;100</code>.</p>
-<p><small>* Scoping might be still a problem, so try to use standard methods, or the ones included in a package which contains a function you want to annotate.</small></p>
-<p><details> <summary> Click to see the full log of the interactive Q&amp;A. </summary></p>
+<p>After this, you will be carried through an interactive Q&amp;A asking you about each line of the output and how it should be annotated. If you opt for conditional annotations, the conditions should be also added.</p>
+<p><strong>Annotations</strong> are short fragments of text to help students (or yourself) to understand the output. They may contain fragment of R code enclosed in backticks, like in Rmarkdown.* For example, if you can some additional information to the output, say CFI index: <code>by the way, CFI is `fitMeasures(ob)[&quot;cfi&quot;]`</code>. Try to avoid using <code>&quot;</code> quotation marks (if it’s unavoidable, escape it, i.e. - add a backslash before <code>\&quot;</code> ).</p>
+<p>Consider using package <code>crayon</code> to format annotations, for example: <code>&quot;No, you `crayon::bold(&quot;can not&quot;)` interpret these coefficients.&quot;</code>.</p>
+<p><strong>Conditions</strong> are optional pieces of R code that should return <em>TRUE</em> or <em>FALSE</em>, they may contain an outputted object referred to as <code>ob</code>, for example, <code>nobs(ob)&lt;100</code> is a proper condition to show yout annotations if the model was fitted to sample less than 100. All conditions are enclosed in <code>if()</code> and executed before printing the corresponding annotation, if the expression returns <em>TRUE</em>. If one condition is specified than at least second should be specified as well, for example if there is a condition <code>nobs(ob)&lt;100</code>, there should be also <code>nobs(ob)&gt;100</code>.</p>
+<p><small>* Scoping may still be a problem, so try to use in annotations only standard methods, or methods included in the same package as a function being annotated </small></p>
+<p><details> <summary> Click here to see the full log of the interactive Q&amp;A. </summary></p>
 <pre><code>
-[1] lavaan 0.6-2 ended normally after 22 iterations
-[2] 
-[3]   Optimization method                           NLMINB
-[4]   Number of free parameters                          8
-[5] 
-[6]   Number of observations                           301
-[7] 
-[8]   Estimator                                         ML
-[9]   Model Fit Test Statistic                      11.798
-[10]   Degrees of freedom                                 2
-[11]   P-value (Chi-square)                           0.003
+&gt; create_annotation(lm(dist ~ speed, cars))
+[1] 
+[2] Call:
+[3] lm(formula = dist ~ speed, data = cars)
+[4] 
+[5] Coefficients:
+[6] (Intercept)        speed  
+[7]     -17.579        3.932  
+[8] 
 Above is the output you are going to annotate.
-
----------------------------------------------------------------------------
-
 Would you like to make annotations conditional?
 You will be prompted to add conditions for every line of current output. 
 
@@ -76,197 +133,83 @@ You will be prompted to add conditions for every line of current output.
 2: No
 
 Selection: 1
-
----------------------------------------------------------------------------
-
 Every condition will be saved as an R script. You can refer to the output object of the initial call as 'ob'.
 Now I am going to return it line by line so you can add your annotations.
 If you do not want to comment the line, just press 'Enter'.
----------------------------------------------------------------------------
+[1] 
+[2] Call:
+Is it conditional? 
 
-[1] lavaan 0.6-2 ended normally after 22 iterations
+1: Yes
+2: No
+
+Selection: 2
+Annotate: 
+[3] lm(formula = dist ~ speed, data = cars)
+Is it conditional? 
+
+1: Yes
+2: No
+
+Selection: 2
+Annotate: This is a full call, including the arguments that weren't specified; those arguments were set to their default values.
+[4] 
+[5] Coefficients:
+Is it conditional? 
+
+1: Yes
+2: No
+
+Selection: 2
+Annotate: These are unstandardized regression coefficients.
+[6] (Intercept)        speed  
+Is it conditional? 
+
+1: Yes
+2: No
+
+Selection: 2
+Annotate: 
+[7]     -17.579        3.932  
 Is it conditional? 
 
 1: Yes
 2: No
 
 Selection: 1
----------------------------------------------------------------------------
-
-What is condition 1? lavInspect(m, &quot;optim&quot;)$converged
-
----------------------------------------------------------------------------
-
-Annotate (condition 1): The solution was found. Also note the version of the software.
-
----------------------------------------------------------------------------
-
-What is condition 2? !lavInspect(m, &quot;optim&quot;)$converged
-
----------------------------------------------------------------------------
-
-Annotate (condition 2): Beware! The solution was NOT found for this model.
-
----------------------------------------------------------------------------
-
+What is condition 1? nobs(ob)&lt;100
+Annotate (if condition 1 is TRUE): The sample size is below 100 observations. The estimated parameters can be underpowered.
+What is condition 2? nobs(ob)&gt;99
+Annotate (if condition 2 is TRUE): The sample size is 100 or higher.
 Need to add another (last) condition? 
 
 1: Yes
 2: No
 
 Selection: 2
----------------------------------------------------------------------------
-
-[2] 
-[3]   Optimization method                           NLMINB
-Is it conditional? 
-
-1: Yes
-2: No
-
-Selection: 2
----------------------------------------------------------------------------
-
-Annotate: 
-[4]   Number of free parameters                          8
-Is it conditional? 
-
-1: Yes
-2: No
-
-Selection: 2
-
----------------------------------------------------------------------------
-
-Annotate: 
-[5] 
-[6]   Number of observations                           301
-Is it conditional? 
-
-1: Yes
-2: No
-
-Selection: 1
-
----------------------------------------------------------------------------
-
-What is condition 1? nobs(ob)&gt;500
-
----------------------------------------------------------------------------
-
-Annotate (condition 1): You have relatively large sample.
-
----------------------------------------------------------------------------
-
-What is condition 2? nobs(ob)&lt;500
-
----------------------------------------------------------------------------
-
-Annotate (condition 2): You have relatively small sample. Treat chi-square seriously.
-
----------------------------------------------------------------------------
-
-Need to add another (last) condition? 
-
-1: Yes
-2: No
-
-Selection: 2
-
----------------------------------------------------------------------------
-
-[7] 
-[8]   Estimator                                         ML
-Is it conditional? 
-
-1: Yes
-2: No
-
-Selection: 2
-
----------------------------------------------------------------------------
-
-Annotate: 
-[9]   Model Fit Test Statistic                      11.798
-Is it conditional? 
-
-1: Yes
-2: No
-
-Selection: 2
-
----------------------------------------------------------------------------
-
-Annotate: this is actually Chi-square. its value is `round(fitMeasures(ob)[&quot;chisq&quot;],1)` with `fitMeasures(ob)[&quot;df&quot;]` degrees of freedom.
-
----------------------------------------------------------------------------
-
-[10]   Degrees of freedom                                 2
-Is it conditional? 
-
-1: Yes
-2: No
-
-Selection: 2
-
----------------------------------------------------------------------------
-
-Annotate: 
-
----------------------------------------------------------------------------
-
-[11]   P-value (Chi-square)                           0.003
-Is it conditional? 
-
-1: Yes
-2: No
-
-Selection: 2
-
----------------------------------------------------------------------------
-
-Annotate: 
-
----------------------------------------------------------------------------
-
-It's over. Press Enter and have a look at the annotated. 
-
----------------------------------------------------------------------------
-
-lavaan 0.6-2 ended normally after 22 iterations 
-CONDITION: lavInspect(m, &quot;optim&quot;)$converged
-ANNOTATION: The solution was found. Also note the version of the software.
-CONDITION: !lavInspect(m, &quot;optim&quot;)$converged
-ANNOTATION: Beware! The solution was NOT found for this model.
-
- 
-
-  Optimization method                           NLMINB 
-
-  Number of free parameters                          8 
-
- 
-
-  Number of observations                           301 
-CONDITION: nobs(ob)&gt;500
-ANNOTATION: You have relatively large sample.
-CONDITION: nobs(ob)&lt;500
-ANNOTATION: You have relatively small sample. Tread chi-square seriously.
-
- 
-
-  Estimator                                         ML 
-
-  Model Fit Test Statistic                      11.798 
+[8] 
+It's over. Press Enter to have a look at the annotated output. 
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+  Call: 
+  lm(formula = dist ~ speed, data = cars) 
 CONDITION: 
-ANNOTATION: this is actually Chi-square. its value is `round(fitMeasures(ob)[&quot;chisq&quot;],1)` with `fitMeasures(ob)[&quot;df&quot;]` degrees of freedom.
+ANNOTATION: This is a full call, including the arguments that weren't sepcified; those arguments were set to their default values.
 
-  Degrees of freedom                                 2 
+   
+  Coefficients: 
+CONDITION: 
+ANNOTATION: These are unstandardized regression coefficients.
 
-  P-value (Chi-square)                           0.003 
+  (Intercept)        speed   
+      -17.579        3.932   
+CONDITION: nobs(ob)&lt;100
+ANNOTATION: The sample size is below 100 obersvations. `bold('The estimated parameters can be underpowered!')`
+
+ CONDITION: nobs(ob)&gt;99
+ANNOTATION: The sample size is 100 or higher.
+
   
----------------------------------------------------------------------------
-
+  ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
 How do I save the annotations?
 
 1: + Save as R-script for future use with 'annotate' function.
@@ -274,89 +217,120 @@ How do I save the annotations?
 
 Enter one or more numbers separated by spaces, or an empty line to cancel
 1: 1 2
+To which functions this annotation is applicable? separate by spaces e.g., lm cfa:  lm
+Give this file a name with .R extension: lm.annot.R
 
----------------------------------------------------------------------------
-
-To which functions this annotation is applicable? separate by spaces e.g., lavaan::cfa cfa:  cfa sem lavaan
-
----------------------------------------------------------------------------
-
-Give this file a name with .R extension: example.R
-
----------------------------------------------------------------------------
-
-Entries are saved to example.R. You can manually edit them later.
+Entries are saved to lm.annot.R. You can manually edit them later.
+Give this file a name with .html extension: example.html
 all done.
 </code></pre>
 <p></details></p>
-<p>After the tutorial finished, two files can be saved: <strong>example.R</strong> (see <em>Technical details</em> below) that can be used for dynamic annotation, and <strong>example.html</strong> that shows all annotations with conditions (as following):</p>
-<pre>lavaan 0.6-2 ended normally after 22 iterations<br><span style="color:red;">CONDITION1: lavInspect(ob, &quot;optim&quot;)$converged<br>ANNOTATION: The solution was found. Also note the version of the software.<br>CONDITION2: !lavInspect(ob, &quot;optim&quot;)$converged<br>ANNOTATION: Beware! The solution was NOT found for this model.<br></span><br><span style="color:red;"></span>  Optimization method                           NLMINB<br><span style="color:red;"></span>  Number of free parameters                          8<br><span style="color:red;"></span><br><span style="color:red;"></span>  Number of observations                           301<br><span style="color:red;">CONDITION1: nobs(ob)&gt;500<br>ANNOTATION: You have relatively large sample.<br>CONDITION2: nobs(ob)&lt;500<br>ANNOTATION: You have relatively small sample. Treat chi-square seriously.<br></span><br><span style="color:red;"></span>  Estimator                                         ML<br><span style="color:red;"></span>  Model Fit Test Statistic                      11.798<br><span style="color:red;">ANNOTATION: this is actually Chi-square. its value is `round(fitMeasures(ob)[&quot;chisq&quot;],1)` with `fitMeasures(ob)[&quot;df&quot;]` degrees of freedom. <br></span>  Degrees of freedom                                 2<br><span style="color:red;"></span>  P-value (Chi-square)                           0.003<br><span style="color:red;"></span></pre>
+<p>After the tutorial finished, two files can be saved: <strong>lm.annot.R</strong> (see <em>Technical details</em> below) that can be used for dynamic annotation, and <strong>example.html</strong> that shows all annotations with conditions (as following):</p>
+<pre><br><span style="color:red;"></span>Call:<br><span style="color:red;"></span>lm(formula = dist ~ speed, data = cars)<br><span style="color:red;">
+ANNOTATION: This is a full call, including the arguments that weren't specified; those arguments were set to their default values.<br></span><br><span style="color:red;"></span>Coefficients:<br><span style="color:red;">
+
+ANNOTATION: These are unstandardized regression coefficients.<br></span>(Intercept)        speed  <br><span style="color:red;"></span>    -17.579        3.932  <br><span style="color:red;">CONDITION1: nobs(ob)&lt;100<br>ANNOTATION: The sample size is below 100 observations. `bold('The estimated parameters can be underpowered!')`<br>CONDITION2: nobs(ob)&gt;99<br>ANNOTATION: The sample size is 100 or higher.<br></span><br><span style="color:red;"></span></pre>
 </div>
 <div id="getting-your-output-annotated" class="section level2">
 <h2>2. Getting your output annotated</h2>
 <p>First, tell R where the libarary with annotations is located.</p>
-<pre><span style="color:blue">options(annotated.source=&quot;example.R&quot;)
-</span></pre>
-<p>Second, make a call to a function, in a usual way, but embraced by <code>annotated()</code>. Note that this would return the usual output of <code>cfa()</code>, so you can save it to some object for further examination. For example, later you can check <code>summary(m)</code></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">options</span>(<span class="dt">annotated.source=</span><span class="st">&quot;lm.annot.R&quot;</span>)</code></pre></div>
+<p>Second, make a call to a function, in a usual way, but embraced by <code>annotated()</code>. Note that this would return the usual output of <code>lm()</code>, so you can save it to some object for further examination. For example, later you can check <code>summary(m)</code></p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">m &lt;-<span class="st"> </span><span class="kw">annotated</span>(<span class="kw">lm</span>(lifeExpF <span class="op">~</span><span class="st"> </span>ppgdp, UN))</code></pre></div>
 <pre>
- <span style="color:blue"> 
-m&lt;-annotated(cfa('f1 =~ x1 + x2 + x3 + x4', HolzingerSwineford1939))</span>
+ <span style="color:blue"> &gt; annotated(lm(lifeExpF ~ ppgdp, UN)) </span>
 
-lavaan 0.6-2 ended normally after 22 iterations
- <span style="color:red">The solution was found. Also note the version of the software. </span>
+Call:
+lm(formula = lifeExpF ~ ppgdp, data = UN)
+ <span style="color:red">This is a full call, including the arguments that weren't specified; those arguments were set to their default values.</span>
 
-  Optimization method                           NLMINB
-  Number of free parameters                          8
-
-  Number of observations                           301
- <span style="color:red">You have relatively small sample. Treat chi-square seriously. </span>
-
-  Estimator                                         ML
-  Model Fit Test Statistic                      11.798
- <span style="color:red">this is actually Chi-square.its value is 11.8 with 2 degrees of freedom.</span>
-  Degrees of freedom                                 2
-  P-value (Chi-square)                           0.003
+Coefficients:
+ <span style="color:red">These are unstandardized regression coefficients.</span>
+(Intercept)        ppgdp  
+  6.837e+01    3.018e-04  
+ <span style="color:red"> The sample size is 100 or higher. </span>
 </pre>
-Likewise, we can use different model to get annotations (not the change in the annotation for the sample size):
+<p>Likewise, if we fit the model to a sample less than 100, the annotations will change correspondingly:</p>
 <pre>
-<span style="color:blue">m1&lt;-annotated(cfa('f1 =~ x5 + x6 + x7', rbind(HolzingerSwineford1939, HolzingerSwineford1939)  )) </span>
+ <span style="color:blue"> &gt; annotated(lm(lifeExpF ~ ppgdp, UN[1:10,])) </span>
 
-lavaan 0.6-2 ended normally after 25 iterations
- <span style="color:red">The solution was found. Also note the version of the software. </span>
-  Optimization method                           NLMINB
-  Number of free parameters                          6
+Call:
+lm(formula = lifeExpF ~ ppgdp, data = UN)
+ <span style="color:red">This is a full call, including the arguments that weren't specified; those arguments were set to their default values.</span>
 
-  Number of observations                           602
- <span style="color:red">You have relatively large sample.  </span>
-
-  Estimator                                         ML
-  Model Fit Test Statistic                       0.000
-<span style="color:red">this is actually Chi-square.its value is 0 with 0 degrees of freedom. </span>
-  Degrees of freedom                                 0
- </pre>
+Coefficients:
+ <span style="color:red">These are unstandardized regression coefficients.</span>
+(Intercept)        ppgdp  
+  6.870e+01    3.374e-04   
+ <span style="color:red">  The sample size is below 100 observations. <b>The estimated parameters can be underpowered!</b> </span>
+</pre>
 </div>
 <div id="technical-details" class="section level2">
 <h2>3. Technical details</h2>
-<p><code>example.R</code> looks like this - it is a generated R code that creates a list with three elements: <code>annotation</code>, <code>conditions</code>, and <code>methods.for</code>. There are as many elements in each of <code>annotation</code> and <code>conditions</code> as long the the print output is. One can manually edit it.</p>
-<pre><code>list(
-  annotation=list(
-    cond1=c('The solution was found. Also note the version of the software.','','','','',
-            'You have relatively large sample.', '','',
-            'this is actually Chi-square.its value is `round(fitMeasures(ob)[&quot;chisq&quot;],1)` with `fitMeasures(ob)[&quot;df&quot;]` degrees of freedom.', '',''),
-    cond2=c('Beware! The solution was NOT found for this model.','','','','',
-            'You have relatively small sample. Treat chi-square seriously.','','','','',''),
-    cond3=c('','','','','','','','','','','')),
-  
-  conditions=list(
-    cond1=c('lavInspect(ob, &quot;optim&quot;)$converged','','','','',
-            'nobs(ob)&gt;500','','','','',''),
-    cond2=c('!lavInspect(ob, &quot;optim&quot;)$converged','','','','',
-            'nobs(ob)&lt;500','','','','',''),
-    cond3=c('','','','','','','','','','','')),
-  
-  methods.for=c(&quot;cfa&quot;, &quot;sem&quot;, &quot;lavaan&quot;)
-  
-  )</code></pre>
+<p><code>lm.annot.R</code> looks like this - it is a generated R code that creates a list with three elements: <code>annotation</code>, <code>conditions</code>, and <code>methods.for</code>. There are as many elements in each of <code>annotation</code> and <code>conditions</code> as long the the print output is. One can manually edit it.</p>
+<pre><code>#This is a script generated with an R package 'annotated'. It is supposed to be used as a library of annotations within the function 'annotated()'. Created on: 2019-02-10 20:48:35
+
+list(
+ annotation = list(
+  cond1 = c(
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;This is a full call, including the arguments that weren't specified; those arguments were set to their default values.&quot;,
+    &quot;&quot;,
+    &quot;These are unstandardized regression coefficients.&quot;,
+    &quot;&quot;,
+    &quot;The sample size is below 100 observations. `red('The estimated parameters can be underpowered!')`&quot;,
+    &quot;&quot;),
+  cond2 = c(
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;The sample size is 100 or higher.&quot;,
+    &quot;&quot;),
+  cond3 = c(
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;)
+ ),
+ conditions = list(
+  cond1 = c(
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;nobs(ob)&lt;100&quot;,
+    &quot;&quot;),
+  cond2 = c(
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;nobs(ob)&gt;99&quot;,
+    &quot;&quot;),
+  cond3 = c(
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;,
+    &quot;&quot;)
+ ),
+methods.for = &quot;lm&quot;
+)</code></pre>
 </div>
 
 
