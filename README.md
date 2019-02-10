@@ -31,6 +31,10 @@ Speed and simplicity.
 Annotations are printed in a different (red) color, which makes them easier to understand.
 
 
+## Note
+
+The coloring is based on package `crayon` which works only in RStudio > 1.1. Make sure to update RStudio.
+
 ## Limitations
 
 Currently limited to the Console use, and 3 conditions. Not appropriate for non-interactive use.
