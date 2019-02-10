@@ -272,7 +272,7 @@ if(is.null(getOption("annotated.source"))) {
   if(!any(applicable.annotations.index)) {
     stop(paste("The annotation is not available for function", function.used), call.=F)
 
-  } else if (applicable.annotations.index>1) {
+  } else if (sum(applicable.annotations.index)>1) {
 
 
 
