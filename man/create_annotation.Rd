@@ -13,7 +13,7 @@ create_annotation(...)
 Create conditional annotations, and save them for further use.
 }
 \details{
-run create_annotation() and follow the interactive instructions, or add an unquoted call.
+Run create_annotation() and follow inline instructions, or add an unquoted call as an argument.
 }
 \examples{
  require(datasets)

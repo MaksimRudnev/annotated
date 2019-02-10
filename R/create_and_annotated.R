@@ -3,7 +3,7 @@
 #' @description Create conditional annotations, and save them for further use.
 #' @param ... An examplary call that produces a print output to be annotated.
 #'
-#' @details run create_annotation() and follow the interactive instructions, or add an unquoted call.
+#' @details Run create_annotation() and follow inline instructions, or add an unquoted call as an argument.
 #'
 #' @examples  require(datasets)
 #'  if(interactive())
