@@ -23,7 +23,7 @@ Consider using package `crayon` to format annotations, for example: ```"No, you 
 1. Set the location of the annotation library by specifying `annotated.source` option, for example, a folder "collection": `options(annotated.source="collection")`.
 2. Run `annotated(some unquoted call to a function)` and enjoy.
 
-See vignette: https://github.com/MaksimRudnev/annotated/blob/master/vignettes/vignette.html
+See vignette: https://github.com/MaksimRudnev/annotated/blob/master/vignettes/vignette.md
 
 ## Pros
 
