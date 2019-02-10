@@ -17,7 +17,7 @@ For learners: get annotations
 }
 \examples{
 if(interactive()) {
- options(annotated.source = "vignettes/lm.ru.R") # set the source file or directory
+ options(annotated.source = "vignettes/lm.annot.R") # set the source file or directory
  require(datasets)
  lin.mod1 <- annotated(lm('dist ~ speed', cars))
 }

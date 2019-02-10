@@ -1,0 +1,292 @@
+---
+title: "Adding dynamic annotations to console outputs with the R package `annotated`"
+author: "Maksim Rudnev"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Adding annotations to console outputs}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+
+1. [Create annotations](#create-annotations)
+2. [Getting your output annotated](#getting-your-output-annotated)
+3. [Technical details](#technical-details)
+
+
+## 1. Create annotations
+
+
+One need to create an annotation or use the existing one. If you have an annotation files, check the next section - on how to use it.
+
+Annotation is best created with a real examplary output. So create some call and put it unquoted to the `create_annotation()` function.
+
+
+<pre><span style="color:blue">
+library(annotated)
+create_annotation(lm(dist ~ speed, cars))
+</pre>
+
+After this, you will be carried through an interactive Q&A asking you about each line of the output and how it should be annotated. If you opt for conditional annotations, the conditions should be also added.
+
+**Annotations** are short fragments of text to help students (or yourself) to understand the output. They may contain fragment of R code enclosed in backticks, like in Rmarkdown.\* For example, if you can some additional information to the output, say CFI index: ``` by the way, CFI is `fitMeasures(ob)["cfi"]` ```. Try to avoid using `"` quotation marks (if it's unavoidable, escape it, i.e. - add a backslash before `\"` ).
+
+Consider using package `crayon` to format annotations, for example: ```"No, you `crayon::bold("can not")` interpret these coefficients."```.
+
+**Conditions** are optional pieces of R code that should return *TRUE* or *FALSE*, they may contain an outputted object referred to as `ob`, for example, `nobs(ob)<100` is a proper condition to show yout annotations if the model was fitted to sample less than 100. All conditions are enclosed in `if()` and executed before printing the corresponding annotation, if the expression returns *TRUE*. If one condition is specified than at least second should be specified as well, for example if there is a condition `nobs(ob)<100`, there should be also `nobs(ob)>100`.
+
+<small>\* Scoping may still be a problem, so try to use in annotations only standard methods, or methods included in the same package as a function being annotated </small>
+
+<details>
+  <summary>
+    Click here to see the full log of the interactive Q&A.
+  </summary>
+
+```
+
+> create_annotation(lm(dist ~ speed, cars))
+[1] 
+[2] Call:
+[3] lm(formula = dist ~ speed, data = cars)
+[4] 
+[5] Coefficients:
+[6] (Intercept)        speed  
+[7]     -17.579        3.932  
+[8] 
+Above is the output you are going to annotate.
+Would you like to make annotations conditional?
+You will be prompted to add conditions for every line of current output. 
+
+1: Yes
+2: No
+
+Selection: 1
+Every condition will be saved as an R script. You can refer to the output object of the initial call as 'ob'.
+Now I am going to return it line by line so you can add your annotations.
+If you do not want to comment the line, just press 'Enter'.
+[1] 
+[2] Call:
+Is it conditional? 
+
+1: Yes
+2: No
+
+Selection: 2
+Annotate: 
+[3] lm(formula = dist ~ speed, data = cars)
+Is it conditional? 
+
+1: Yes
+2: No
+
+Selection: 2
+Annotate: This is a full call, including the arguments that weren't specified; those arguments were set to their default values.
+[4] 
+[5] Coefficients:
+Is it conditional? 
+
+1: Yes
+2: No
+
+Selection: 2
+Annotate: These are unstandardized regression coefficients.
+[6] (Intercept)        speed  
+Is it conditional? 
+
+1: Yes
+2: No
+
+Selection: 2
+Annotate: 
+[7]     -17.579        3.932  
+Is it conditional? 
+
+1: Yes
+2: No
+
+Selection: 1
+What is condition 1? nobs(ob)<100
+Annotate (if condition 1 is TRUE): The sample size is below 100 observations. The estimated parameters can be underpowered.
+What is condition 2? nobs(ob)>99
+Annotate (if condition 2 is TRUE): The sample size is 100 or higher.
+Need to add another (last) condition? 
+
+1: Yes
+2: No
+
+Selection: 2
+[8] 
+It's over. Press Enter to have a look at the annotated output. 
+───────────────────────────────────────────────────────────────────────────────────────────────────────────────────── 
+  Call: 
+  lm(formula = dist ~ speed, data = cars) 
+CONDITION: 
+ANNOTATION: This is a full call, including the arguments that weren't sepcified; those arguments were set to their default values.
+
+   
+  Coefficients: 
+CONDITION: 
+ANNOTATION: These are unstandardized regression coefficients.
+
+  (Intercept)        speed   
+      -17.579        3.932   
+CONDITION: nobs(ob)<100
+ANNOTATION: The sample size is below 100 obersvations. `bold('The estimated parameters can be underpowered!')`
+
+ CONDITION: nobs(ob)>99
+ANNOTATION: The sample size is 100 or higher.
+
+  
+  ─────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+How do I save the annotations?
+
+1: + Save as R-script for future use with 'annotate' function.
+2:   Save as html as the static example.
+
+Enter one or more numbers separated by spaces, or an empty line to cancel
+1: 1 2
+To which functions this annotation is applicable? separate by spaces e.g., lm cfa:  lm
+Give this file a name with .R extension: lm.annot.R
+
+Entries are saved to lm.annot.R. You can manually edit them later.
+Give this file a name with .html extension: example.html
+all done.
+
+```
+</details>
+
+
+
+After the tutorial finished, two files can be saved: **lm.annot.R** (see *Technical details* below) that can be used for dynamic annotation, and **example.html** that shows all annotations with conditions (as following):
+
+
+<pre><br><span style='color:red;'></span>Call:<br><span style='color:red;'></span>lm(formula = dist ~ speed, data = cars)<br><span style='color:red;'>
+ANNOTATION: This is a full call, including the arguments that weren't specified; those arguments were set to their default values.<br></span><br><span style='color:red;'></span>Coefficients:<br><span style='color:red;'>
+
+ANNOTATION: These are unstandardized regression coefficients.<br></span>(Intercept)        speed  <br><span style='color:red;'></span>    -17.579        3.932  <br><span style='color:red;'>CONDITION1: nobs(ob)<100<br>ANNOTATION: The sample size is below 100 observations. `bold('The estimated parameters can be underpowered!')`<br>CONDITION2: nobs(ob)>99<br>ANNOTATION: The sample size is 100 or higher.<br></span><br><span style='color:red;'></span></pre>
+
+
+
+## 2. Getting your output annotated
+
+First, tell R where the libarary with annotations is located.
+
+```{r eval = FALSE}
+
+options(annotated.source="lm.annot.R")
+
+```
+
+
+Second, make a call to a function, in a usual way, but embraced by `annotated()`. Note that this would return the usual output of `lm()`, so you can save it to some object for further examination. For example, later you can check `summary(m)`
+
+```{r eval = FALSE}
+
+m <- annotated(lm(lifeExpF ~ ppgdp, UN))
+
+```
+
+<pre>
+ <span style="color:blue"> > annotated(lm(lifeExpF ~ ppgdp, UN)) </span>
+
+Call:
+lm(formula = lifeExpF ~ ppgdp, data = UN)
+ <span style="color:red">This is a full call, including the arguments that weren't specified; those arguments were set to their default values.</span>
+
+Coefficients:
+ <span style="color:red">These are unstandardized regression coefficients.</span>
+(Intercept)        ppgdp  
+  6.837e+01    3.018e-04  
+ <span style="color:red"> The sample size is 100 or higher. </span>
+</pre>
+
+
+Likewise, if we fit the model to a sample less than 100, the annotations will change correspondingly: 
+
+<pre>
+ <span style="color:blue"> > annotated(lm(lifeExpF ~ ppgdp, UN[1:10,])) </span>
+
+Call:
+lm(formula = lifeExpF ~ ppgdp, data = UN)
+ <span style="color:red">This is a full call, including the arguments that weren't specified; those arguments were set to their default values.</span>
+
+Coefficients:
+ <span style="color:red">These are unstandardized regression coefficients.</span>
+(Intercept)        ppgdp  
+  6.870e+01    3.374e-04   
+ <span style="color:red">  The sample size is below 100 observations. <b>The estimated parameters can be underpowered!</b> </span>
+</pre>
+
+
+## 3. Technical details
+
+`lm.annot.R` looks like this - it is a generated R code that creates a list with three elements: `annotation`, `conditions`, and `methods.for`. There are as many elements in each of `annotation` and `conditions` as long the the print output is. One can manually edit it.
+
+```
+#This is a script generated with an R package 'annotated'. It is supposed to be used as a library of annotations within the function 'annotated()'. Created on: 2019-02-10 20:48:35
+
+list(
+ annotation = list(
+  cond1 = c(
+    "",
+    "",
+    "This is a full call, including the arguments that weren't specified; those arguments were set to their default values.",
+    "",
+    "These are unstandardized regression coefficients.",
+    "",
+    "The sample size is below 100 observations. `red('The estimated parameters can be underpowered!')`",
+    ""),
+  cond2 = c(
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "The sample size is 100 or higher.",
+    ""),
+  cond3 = c(
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "")
+ ),
+ conditions = list(
+  cond1 = c(
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "nobs(ob)<100",
+    ""),
+  cond2 = c(
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "nobs(ob)>99",
+    ""),
+  cond3 = c(
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "",
+    "")
+ ),
+methods.for = "lm"
+)
+```
+
+

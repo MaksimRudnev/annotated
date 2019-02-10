@@ -116,10 +116,8 @@ cat(cli::rule())
   )
 
   selected.choice <- select.list(choices,
-                                 title=paste0(
-                                   cli::rule(),
-                                   "\nHow do I save the annotations?"),
-                                 preselect=choices[1], multiple=T)
+                                 title = cli::rule("How do I save the annotations?"),
+                                 preselect = choices[1], multiple=T)
 
   if(any(selected.choice %in% choices[1])) {
 
@@ -135,21 +133,21 @@ cat(cli::rule())
     cat( paste0("#This is a script generated with an R package 'annotated'. It is supposed to be used as a library of annotations within the function 'annotated()'. Created on: ", Sys.time(), "\n\n",
       "list(\n",
                 " annotation = list(\n  cond1 = ",
-                paste0("c(\n    ", paste0("'", annotation[[1]], "'", collapse=",\n    "),"),\n"),
+                paste0("c(\n    ", paste0("\"", annotation[[1]], "\"", collapse=",\n    "),"),\n"),
                 "  cond2 = ",
-                paste0("c(\n    ", paste0("'", annotation[[2]], "'", collapse=",\n    "),  "),\n"),
+                paste0("c(\n    ", paste0("\"", annotation[[2]], "\"", collapse=",\n    "),  "),\n"),
                 "  cond3 = ",
-                paste0("c(\n    ", paste0("'", annotation[[3]], "'", collapse=",\n    "),  ")\n ),\n"),
+                paste0("c(\n    ", paste0("\"", annotation[[3]], "\"", collapse=",\n    "),  ")\n ),\n"),
 
 
                 " conditions = list(\n  cond1 = ",
-                paste0("c(\n    ", paste0("'", conditions[[1]], "'", collapse=",\n    "),  "),\n"),
+                paste0("c(\n    ", paste0("\"", conditions[[1]], "\"", collapse=",\n    "),  "),\n"),
                 "  cond2 = ",
-                paste0("c(\n    ", paste0("'", conditions[[2]], "'", collapse=",\n    "),  "),\n"),
+                paste0("c(\n    ", paste0("\"", conditions[[2]], "\"", collapse=",\n    "),  "),\n"),
                 "  cond3 = ",
-                paste0("c(\n    ", paste0("'", conditions[[3]], "'", collapse=",\n    "),  ")\n ),\n"),
+                paste0("c(\n    ", paste0("\"", conditions[[3]], "\"", collapse=",\n    "),  ")\n ),\n"),
 
-                "methods.for = ",           paste0("'", strsplit(methods.for, " "), "'", collapse=","),
+                "methods.for = ",           paste0("\"", strsplit(methods.for, " "), "\"", collapse=","),
                 "\n)", collapse="\n"),
          file=filename)
     void<-readline(paste0("Entries are saved to ", filename, ". You can manually edit them later."))
@@ -219,7 +217,7 @@ cat(cli::rule())
 #'
 #'@examples
 #'if(interactive()) {
-#'  options(annotated.source = "vignettes/lm.ru.R") # set the source file or directory
+#'  options(annotated.source = "vignettes/lm.annot.R") # set the source file or directory
 #'  require(datasets)
 #'  lin.mod1 <- annotated(lm('dist ~ speed', cars))
 #' }
@@ -229,6 +227,11 @@ cat(cli::rule())
 #'
 #'@export
 annotated <- function(...) {
+
+
+  is.url  <- function(x) regexpr("(http:\\/\\/)|(https:\\/\\/)", x) == 1
+
+
 
   # Read annotation files
 if(is.null(getOption("annotated.source"))) {
@@ -240,16 +243,23 @@ if(is.null(getOption("annotated.source"))) {
 
   if(dir.exists(source.file.dir) ) {
 
-
-    annotations <- lapply(list.files(source.file.dir), function(x) source(paste0(source.file.dir, "/", x))[["value"]])
+    annotations <- lapply(list.files(source.file.dir, pattern = "\\.R$"),
+                          function(x) source(paste0(source.file.dir, "/", x))[["value"]])
 
   } else if (file.exists(source.file.dir)) {
 
     annotations <- list(one=source(source.file.dir)[["value"]])
 
+  } else if(is.url(source.file.dir))  {
+
+    downloaded.file <- tempfile()
+    download.file(source.file.dir, downloaded.file)
+
+    annotations <- list(one=source(downloaded.file)[["value"]])
+
   } else {
     print(getwd())
-    stop("Cant find annotation file/directory. Change option('annotated.source')")
+    stop("Can't find annotation file/directory. Change options('annotated.source')")
   }
 
   # Check if the function annotation is available in the annotation files.
@@ -320,19 +330,21 @@ if(is.null(getOption("annotated.source"))) {
       # If conditions aren't empty
     } else {
 
-      eval(parse(text=paste("if(", annotation[["conditions"]][["cond1"]][i], ") cat(crayon::red('\n",
+      eval(parse(text=paste("if(", annotation[["conditions"]][["cond1"]][i], ") cat(crayon::red(\"\n",
                             parse.annotation.row(
-                            annotation[["annotation"]][["cond1"]][i]), "'))" )))
-      eval(parse(text=paste("if(", annotation[["conditions"]][["cond2"]][i], ") cat(crayon::red('\n",
+                            annotation[["annotation"]][["cond1"]][i]), "\n\"))"
+                            )))
+      eval(parse(text=paste("if(", annotation[["conditions"]][["cond2"]][i], ") cat(crayon::red(\"\n",
                             parse.annotation.row(
-                              annotation[["annotation"]][["cond2"]][i]), "'))")))
+                              annotation[["annotation"]][["cond2"]][i]), "\n\"))"
+                            )))
 
       if(annotation[["conditions"]][["cond3"]][i]!="") {
 
-        eval(parse(text=paste("if(", annotation[["conditions"]][["cond3"]][i], ") cat(crayon::red(\n'",
+        eval(parse(text=paste("if(", annotation[["conditions"]][["cond3"]][i], ") cat(crayon::red(\"\n",
                               parse.annotation.row(
-                                annotation[["annotation"]][["cond3"]][i]), "'))"))
-             )
+                                annotation[["annotation"]][["cond3"]][i]), "\n\"))"
+                              )))
 
       }
     }
