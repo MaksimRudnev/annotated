@@ -1,9 +1,9 @@
 #Sys.setenv(TZ='GMT')
-#' For instructors: create annotation
+#' @title   For instructors: create annotation
+#' @description Create conditional annotations, and save them for further use.
+#' @param ... An examplary call that produces a print output to be annotated.
 #'
-#'@param ... An examplary call that produces a print output to be annotated.
-#'
-#'@details run create_annotation() and follow the interactive instructions, or add an unquoted call.
+#' @details run create_annotation() and follow the interactive instructions, or add an unquoted call.
 #'
 #' @examples  require(datasets)
 #'  if(interactive())
@@ -211,7 +211,8 @@ cat(cli::rule())
 
 
 # Annotated funct #####
-#' For learners: get annotations
+#' @title  For learners: get annotations
+#' @description Get annotated output in console.
 #'
 #' @param ... A call to a function to get annotations.
 #'
@@ -318,7 +319,7 @@ if(is.null(getOption("annotated.source"))) {
 
       if(annotation[["annotation"]][["cond1"]][i]!="") {
         cat(crayon::red(paste0("\n",
-                       parse.annotation.row(
+                       parse_annotation_row(
                          annotation[["annotation"]][["cond1"]][i]),
                        "\n")
                 ))
@@ -331,18 +332,18 @@ if(is.null(getOption("annotated.source"))) {
     } else {
 
       eval(parse(text=paste("if(", annotation[["conditions"]][["cond1"]][i], ") cat(crayon::red(\"\n",
-                            parse.annotation.row(
+                            parse_annotation_row(
                             annotation[["annotation"]][["cond1"]][i]), "\n\"))"
                             )))
       eval(parse(text=paste("if(", annotation[["conditions"]][["cond2"]][i], ") cat(crayon::red(\"\n",
-                            parse.annotation.row(
+                            parse_annotation_row(
                               annotation[["annotation"]][["cond2"]][i]), "\n\"))"
                             )))
 
       if(annotation[["conditions"]][["cond3"]][i]!="") {
 
         eval(parse(text=paste("if(", annotation[["conditions"]][["cond3"]][i], ") cat(crayon::red(\"\n",
-                              parse.annotation.row(
+                              parse_annotation_row(
                                 annotation[["annotation"]][["cond3"]][i]), "\n\"))"
                               )))
 
@@ -352,5 +353,3 @@ if(is.null(getOption("annotated.source"))) {
   }
   invisible(ob)
 }
-# eval(parse(text=paste("if(", "nobs(m)>1", ") message(\n'",
-# parse.annotation.row("npnpn `r length(coef(m))` fjsdklkj"), "')")))

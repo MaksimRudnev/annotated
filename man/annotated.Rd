@@ -13,7 +13,7 @@ annotated(...)
 The function invisibly returns an evaluated call to a function. For example, if `annotated(lm(a ~ b))` was called, it will return fitted `lm` object, as if annotated weren't there. Annotations are printed in the console at all times, even when the value is being assigned to an object.
 }
 \description{
-For learners: get annotations
+Get annotated output in console.
 }
 \examples{
 if(interactive()) {

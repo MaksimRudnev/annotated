@@ -1,27 +1,6 @@
-
-
-# lm(x1 ~ sex + ageyr + grade, HolzingerSwineford1939)
-#
-#
-# create_annotation(lm(x1 ~ sex + ageyr + grade, HolzingerSwineford1939))
-#
-# options(annotated.source="collection")
-# m<-annotated(lm(x1 ~ sex + ageyr+ grade + x2, HolzingerSwineford1939))
-#options(annotated.source="tryout1.R")
-
-
-# Это просто повторение того, что вы ввели, с добавлением имен аргументов.
-#
-# Это нестандантизованые регрессионные коэффициенты. По умолчанию ни р-квдрат, ни стандартные ошибки коэффициетов, ни их значимости не показываются. Для этого сохраните модель в объект и добавьте к функции summary().
-#
-# Intercept - это константа, то есть значение зависимой переменной в том случае, если все придикторы равны нулю. Часто это нереалистичное значение.
-
 #' Helper to run inline r code (a lá .Rmd)
-#'
-#'
 #'@param rowtxt Annotation to parse.
-#'
-parse.annotation.row <- function(rowtxt) {
+parse_annotation_row <- function(rowtxt) {
   b<- as.character(exists("ob", where=parent.frame(), inherits=T))
   ob <- get("ob", parent.frame()) #is.null(get0("ob", envir = pos.to.env(-1L)))
 
@@ -44,7 +23,5 @@ parse.annotation.row <- function(rowtxt) {
 }
 
 
-
 #parse.annotation.row(rowtxt="bnonono `r 5 6` sdfskjg")
-#create_annotation()
 

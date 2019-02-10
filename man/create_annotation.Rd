@@ -10,7 +10,7 @@ create_annotation(...)
 \item{...}{An examplary call that produces a print output to be annotated.}
 }
 \description{
-For instructors: create annotation
+Create conditional annotations, and save them for further use.
 }
 \details{
 run create_annotation() and follow the interactive instructions, or add an unquoted call.
