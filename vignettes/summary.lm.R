@@ -7,7 +7,7 @@ list(
     "",
     "Full call to the function lm.",
     "",
-    "Basic info about residuals distribution. In linear models residuals are assumed to be normally distributed, if they are not, the model may provide biased estimates.",
+    "Basic info about residuals distribution. In linear models residuals are assumed to be normally distributed, if they are not, the model may provide biased estimates. `capture.output(hist(ob$residuals))`",
     "",
     "",
     "",

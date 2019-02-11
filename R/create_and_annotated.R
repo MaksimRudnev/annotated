@@ -1,4 +1,6 @@
 #Sys.setenv(TZ='GMT')
+#' @import utils
+#'
 #' @title   For instructors: create annotation
 #' @description Create conditional annotations, and save them for further use.
 #' @param ... An examplary call that produces a print output to be annotated.
