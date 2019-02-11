@@ -4,7 +4,7 @@ Title: Custom Annotations to Console Outputs
 Version: 0.2.1
 Author: Maksim Rudnev
 Maintainer: Maksim Rudnev <maksim.rudnev@gmail.com>
-Description: Quickly annotate console outputs of specific functions.
+Description: Extend console output with a custom text, so that it is more comprehensible for newbies; make these annotations dependent on the input calls and the objects produced by the calls; print additional summaries without interfering with print methods. The package currently includes two functions: 'create_annotation()' for creating libraries of (conditional) annotations, and 'annotated()' to apply these libraries and get annotated console output. 
 License: MIT + file LICENSE
 URL: http://github.com/maksimrudnev/annotated
 BugReports: http://github.com/maksimrudnev/annotated/issues
